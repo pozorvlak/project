@@ -9,7 +9,10 @@ fi
 cd
 if [ "$HOSTNAME" = "trowel.growstuff.org" ]; then
   echo "You're on the hack server! Copying pre-existing ~/.rvm"
-  tar xzf /usr/local/share/rvmdir.tar.gz
+  tar xzf /usr/local/share/setup_growstuff/rvmdir.tar.gz
+  mv rvmdir .rvm
+  FILES_TO_PATCH=$(find .rvm -iname Makefile -o -iname "*.rb")
+  perl -i -pe 's/\bGROWSTUFF_USER\b/$ENV{USER}/eg' $FILES_TO_PATCH
   . ~/.rvm/scripts/rvm # uses bashisms
 else
   curl -L https://get.rvm.io | bash -s stable

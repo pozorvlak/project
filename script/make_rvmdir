@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cp -R ~/.rvm rvmdir
+FILES_TO_PATCH=$(find rvmdir -iname Makefile -o -iname "*.rb")
+perl -i -pe 's/\b$ENV{USER}\b/GROWSTUFF_USER/g' $FILES_TO_PATCH
+tar czf rvmdir.tar.gz rvmdir 
+sudo mkdir -p /usr/local/share/setup_growstuff
+sudo cp rvmdir.tar.gz /usr/local/share/setup_growstuff
