@@ -1,8 +1,16 @@
 #!/bin/sh
 
+rm -rf rvmdir
+echo "Copying .rvm to new directory..."
 cp -R ~/.rvm rvmdir
-FILES_TO_PATCH=$(find rvmdir -iname Makefile -o -iname "*.rb")
+echo "Finding files to patch..."
+FILES_TO_PATCH=$(grep -lRI "\b$USER\b" rvmdir | grep -v \.git)
+echo $FILES_TO_PATCH | tee files_to_patch
+echo "Patching files..."
 perl -i -pe 's/\b$ENV{USER}\b/GROWSTUFF_USER/g' $FILES_TO_PATCH
+echo "Gzipping..."
 tar czf rvmdir.tar.gz rvmdir 
+echo "Installing into /usr/local/share/setup_growstuff"
 sudo mkdir -p /usr/local/share/setup_growstuff
 sudo cp rvmdir.tar.gz /usr/local/share/setup_growstuff
+sudo cp files_to_patch /usr/local/share/setup_growstuff
